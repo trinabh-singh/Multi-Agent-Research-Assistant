@@ -1,6 +1,11 @@
 from langchain_core.prompts import ChatPromptTemplate
+
 from app.config import llm
-from app.state import ResearchState
+from app.state import (
+    ResearchState,
+    Summary,
+)
+
 
 analyst_prompt = ChatPromptTemplate.from_messages(
     [
@@ -20,43 +25,50 @@ analyst_prompt = ChatPromptTemplate.from_messages(
             - Mention disagreements if sources conflict.
             """
         ),
-        ("human",
-        """
-        Sub Question:
+        (
+            "human",
+            """
+            Sub Question:
 
-        {sub_question}
+            {sub_question}
 
-        Search Results:
+            Search Results:
 
-        {results}
-        """
-        )
+            {results}
+            """
+        ),
     ]
 )
 
 analyst_chain = analyst_prompt | llm
 
+
 def analyst_node(state: ResearchState):
 
     search_results = state["search_results"]
 
-    summaries = []
+    summaries: list[Summary] = []
 
     for item in search_results:
+        try:
+
+            response = analyst_chain.invoke(
+                {
+                    "sub_question": item["sub_question"],
+                    "results": item["results"],
+                }
+            )
         
-        response = analyst_chain.invoke(
+
+        except Exception as e:
+            raise RuntimeError(f"Analyst Agent Failed: {e}")
+
+        summaries.append(
             {
                 "sub_question": item["sub_question"],
-                "results": item["results"]
+                "summary": response.content,
             }
         )
-        summaries.append(
-        {
-            "sub_question": item["sub_question"],
-            "summary": response.content
-        }
-    )
-    
 
     return {
         "summaries": summaries,
@@ -64,7 +76,8 @@ def analyst_node(state: ResearchState):
         "agent_trace": [
             {
                 "agent": "Analyst",
-                "action": f"Analyzed search results for {len(search_results)} sub-questions"
+                "status": "completed",
+                "message": f"Summarized {len(search_results)} topics",
             }
-        ]
+        ],
     }

@@ -1,4 +1,8 @@
-from app.state import ResearchState
+from app.state import (
+    ResearchState,
+    ResearchResult,
+)
+
 from app.tools.web_search import search_web
 
 
@@ -6,7 +10,7 @@ def researcher_node(state: ResearchState):
 
     sub_questions = state["sub_questions"]
 
-    search_results = []
+    search_results: list[ResearchResult] = []
 
     for question in sub_questions:
 
@@ -25,7 +29,8 @@ def researcher_node(state: ResearchState):
         "agent_trace": [
             {
                 "agent": "Researcher",
-                "action": f"Collected evidence for {len(sub_questions)} sub-questions",
+                "status": "completed",
+                "message": f"Searched {len(sub_questions)} topics",
             }
         ],
     }

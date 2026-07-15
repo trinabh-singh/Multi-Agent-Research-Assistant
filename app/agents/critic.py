@@ -1,4 +1,5 @@
 from langchain_core.prompts import ChatPromptTemplate
+
 from app.config import llm
 from app.state import ResearchState
 
@@ -10,7 +11,8 @@ critic_prompt = ChatPromptTemplate.from_messages(
             """
             You are an expert research critic.
 
-            Evaluate the factual accuracy and completeness of the provided summaries.
+            Evaluate the factual accuracy and completeness
+            of the provided summaries.
 
             Identify:
 
@@ -47,22 +49,23 @@ def critic_node(state: ResearchState):
             for item in summaries
         ]
     )
+    try:
 
-    response = critic_chain.invoke(
-        {
-            "summaries": formatted_summaries
-        }
-    )
-
-    critiques = [response.content]
-
+        response = critic_chain.invoke(
+            {
+                "summaries": formatted_summaries,
+            }
+        )
+    except Exception as e:
+        raise RuntimeError(f"Critic Agent Failed: {e}")
     return {
-        "critiques": critiques,
+        "critiques": [response.content],
         "current_agent": "Critic",
         "agent_trace": [
             {
                 "agent": "Critic",
-                "action": f"Evaluated {len(summaries)} summaries",
+                "status": "completed",
+                "message": "Reviewed report quality",
             }
         ],
     }

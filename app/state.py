@@ -2,6 +2,23 @@ from typing import TypedDict, List, Optional, Annotated
 import operator
 
 
+class SearchResult(TypedDict):
+    title: str
+    url: str
+    content: str
+    score: float
+
+
+class ResearchResult(TypedDict):
+    sub_question: str
+    results: List[SearchResult]
+
+
+class Summary(TypedDict):
+    sub_question: str
+    summary: str
+
+
 class ResearchState(TypedDict):
     # User input
     question: str
@@ -10,10 +27,10 @@ class ResearchState(TypedDict):
     sub_questions: List[str]
 
     # Researcher output
-    search_results: List[dict]
+    search_results: List[ResearchResult]
 
     # Analyst output
-    summaries: List[dict]
+    summaries: List[Summary]
 
     # Critic output
     critiques: List[str]
@@ -27,5 +44,5 @@ class ResearchState(TypedDict):
     # UI status
     current_agent: str
 
-    # Final confidence
+    # Confidence score
     confidence_score: Optional[float]

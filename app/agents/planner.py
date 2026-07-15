@@ -26,12 +26,15 @@ planner_chain = planner_prompt | llm
 def planner_node(state: ResearchState):
 
     question = state["question"]
-
-    response = planner_chain.invoke(
-        {
-            "question": question
-        }
-    )
+    try:
+        response = planner_chain.invoke(
+            {
+                "question": question
+            }
+        )
+    
+    except Exception as e:
+        raise RuntimeError(f"Planner Agent Failed: {e}")
 
     sub_questions = [
         line.strip("-123456789. ")
@@ -45,7 +48,8 @@ def planner_node(state: ResearchState):
         "agent_trace": [
             {
                 "agent": "Planner",
-                "action": "Generated research plan"
+                "status": "completed",
+                "message": f"Generated {len(sub_questions)} sub-questions",
             }
         ]
     }
