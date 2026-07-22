@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 import time
 
-from app.graph.workflow import graph
+from graph.workflow import graph
 
-from app.api.schemas import (
+from api.schemas import (
     ResearchRequest,
     ResearchResponse,
 )

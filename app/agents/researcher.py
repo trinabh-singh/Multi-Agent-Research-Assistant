@@ -1,9 +1,9 @@
-from app.state import (
+from state import (
     ResearchState,
     ResearchResult,
 )
 
-from app.tools.web_search import search_web
+from tools.web_search import search_web
 
 
 def researcher_node(state: ResearchState):

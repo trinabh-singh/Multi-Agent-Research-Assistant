@@ -1,13 +1,12 @@
 from langgraph.graph import StateGraph, END
 
-from app.state import ResearchState
+from state import ResearchState
 
-from app.agents.planner import planner_node
-from app.agents.researcher import researcher_node
-from app.agents.analyst import analyst_node
-from app.agents.critic import critic_node
-from app.agents.writer import writer_node
-
+from agents.planner import planner_node
+from agents.researcher import researcher_node
+from agents.analyst import analyst_node
+from agents.critic import critic_node
+from agents.writer import writer_node
 workflow = StateGraph(ResearchState)
 
 workflow.add_node(

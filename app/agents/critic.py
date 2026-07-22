@@ -1,7 +1,7 @@
 from langchain_core.prompts import ChatPromptTemplate
 
-from app.config import llm
-from app.state import ResearchState
+from config import llm
+from state import ResearchState
 
 
 critic_prompt = ChatPromptTemplate.from_messages(

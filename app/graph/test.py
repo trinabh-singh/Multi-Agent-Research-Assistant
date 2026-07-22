@@ -1,7 +1,7 @@
-from app.graph.workflow import graph
+from graph.workflow import graph
 
 initial_state = {
-    "question": "How is Generative AI changing healthcare?",
+    "question": "How is AI changing healthcare?",
     "sub_questions": [],
     "search_results": [],
     "summaries": [],
@@ -12,6 +12,9 @@ initial_state = {
     "confidence_score": None,
 }
 
-result = graph.invoke(initial_state)
+for event in graph.stream(
+    initial_state,
+    stream_mode="updates",
+):
 
-print(result["final_report"])
+    print(event)
